@@ -20,12 +20,6 @@ public final class LittleHooks extends JavaPlugin {
     @Override
     public void onEnable() {
         PluginManager manager = getServer().getPluginManager();
-        LittleLink plugin = (LittleLink) manager.getPlugin("LittleLink");
-        if (plugin == null) {
-            getLogger().warning("Plugin LittleLink not found");
-            manager.disablePlugin(this);
-            return;
-        }
 
         // Save config from resources to server directory
         saveDefaultConfig();
@@ -38,16 +32,16 @@ public final class LittleHooks extends JavaPlugin {
         }
 
         // Starting message
-        sendMessage("Server starting");
+        sendMessage("Server starting.");
 
         // Registering the event handler
-        manager.registerEvents(new GameHandler(this, plugin), this);
+        manager.registerEvents(new GameHandler(this), this);
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        sendMessage("Server stopped");
+        sendMessage("Server stopped.");
     }
 
     public void sendMessage(MessageModel model) {
@@ -79,22 +73,18 @@ public final class LittleHooks extends JavaPlugin {
         }
     }
 
-    public void sendMessage(Player player, EmbedModel model) {
+    public void sendMessage(Player player, String content) {
         sendMessage(MessageModel.builder()
                 .username(player.getName())
-                .avatar_url("https://visage.surgeplay.com/face/" + PluginUtils.cleanUUID(player.getUniqueId()))
-                .embeds(List.of(model))
+                .avatar_url("https://visage.surgeplay.com/bust/" + PluginUtils.cleanUUID(player.getUniqueId()))
+                .content(content)
                 .build()
         );
     }
 
     public void sendMessage(String content) {
         sendMessage(MessageModel.builder()
-                .embeds(List.of(EmbedModel.builder()
-                        .color(getConfig().getInt("color.system"))
-                        .description(PluginUtils.bold(content))
-                        .timestamp(Instant.now().toString())
-                        .build()))
+                .content(content)
                 .build()
         );
     }
